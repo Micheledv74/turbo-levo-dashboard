@@ -1,219 +1,236 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Specialized Turbo Levo 2018 Dashboard</title>
-    <style>
-        /* Reset e stili base */
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #1e1e1e;
-            color: white;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+   <title>Specialized Turbo Levo 2018 Dashboard</title>
+   <!-- COBI.bike Script -->
+   <script src="https://cdn.cobi.bike/cobi.js/0.44.0/cobi.js"></script>
+   <style>
+       /* Reset e stili base */
+       body, html {
+           margin: 0;
+           padding: 0;
+           font-family: Arial, sans-serif;
+           background-color: #1e1e1e;
+           color: white;
+           height: 100%;
+           width: 100%;
+           overflow: hidden;
+       }
 
-        /* Forza orientamento orizzontale */
-        @media screen and (orientation: portrait) {
-            body {
-                transform: rotate(-90deg);
-                transform-origin: left top;
-                width: 100vh;
-                height: 100vw;
-                position: absolute;
-                top: 100%;
-                left: 0;
-            }
-        }
+       /* Forza orientamento orizzontale */
+       @media screen and (orientation: portrait) {
+           body {
+               transform: rotate(-90deg);
+               transform-origin: left top;
+               width: 100vh;
+               height: 100vw;
+               position: absolute;
+               top: 100%;
+               left: 0;
+           }
+       }
 
-        /* Layout principale */
-        .dashboard {
-            display: flex;
-            width: 812px;
-            height: 375px;
-            padding: 10px;
-            gap: 10px;
-            margin: 0 auto;
-        }
+       /* Layout principale */
+       .dashboard {
+           display: flex;
+           width: 812px;
+           height: 375px;
+           padding: 10px;
+           gap: 10px;
+           margin: 0 auto;
+       }
 
-        /* Sezione velocità ridimensionata e centrata */
-        .speed-section {
-            flex: 1;
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            max-width: 260px;
-            position: relative;
-            overflow: hidden;
-        }
+       /* Sezione velocità ridimensionata e centrata */
+       .speed-section {
+           flex: 1;
+           background: rgba(255,255,255,0.1);
+           border-radius: 12px;
+           padding: 15px;
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           justify-content: center;
+           max-width: 260px;
+           position: relative;
+           overflow: hidden;
+       }
 
-        /* Contenitore tachimetro centrato */
-        .speedometer {
-            width: 200px;
-            height: 140px;
-            position: relative;
-            margin: 20px auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+       /* Contenitore tachimetro centrato */
+       .speedometer {
+           width: 200px;
+           height: 140px;
+           position: relative;
+           margin: 20px auto;
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+       }
 
-        .speed-title {
-            position: absolute;
-            top: -15px;
-            width: 100%;
-            text-align: center;
-            font-size: 14px;
-            opacity: 0.8;
-            text-transform: uppercase;
-        }
+       .speed-title {
+           position: absolute;
+           top: -15px;
+           width: 100%;
+           text-align: center;
+           font-size: 14px;
+           opacity: 0.8;
+           text-transform: uppercase;
+       }
 
-        .speed-arc {
-            width: 200px;
-            height: 110px;
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+       .speed-arc {
+           width: 200px;
+           height: 110px;
+           position: absolute;
+           top: 10px;
+           left: 50%;
+           transform: translateX(-50%);
+       }
 
-        .speed-led {
-            position: absolute;
-            width: 8px;
-            height: 3px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            transform-origin: center 55px;
-            left: calc(50% - 4px);
-            transition: background-color 0.3s ease;
-        }
+       .speed-led {
+           position: absolute;
+           width: 8px;
+           height: 3px;
+           background: rgba(255,255,255,0.1);
+           border-radius: 2px;
+           transform-origin: center 55px;
+           left: calc(50% - 4px);
+           transition: background-color 0.3s ease;
+       }
 
-        .speed-led.active.eco { background-color: #4CAF50; }
-        .speed-led.active.cruise { background-color: #FFC107; }
-        .speed-led.active.power { background-color: #F44336; }
+       .speed-led.active.eco { background-color: #4CAF50; }
+       .speed-led.active.cruise { background-color: #FFC107; }
+       .speed-led.active.power { background-color: #F44336; }
 
-        .speed-display {
-            position: absolute;
-            left: 50%;
-            bottom: 10px;
-            transform: translateX(-50%);
-            text-align: center;
-            z-index: 1;
-            width: 100%;
-        }
+       .speed-display {
+           position: absolute;
+           left: 50%;
+           bottom: 10px;
+           transform: translateX(-50%);
+           text-align: center;
+           z-index: 1;
+           width: 100%;
+       }
 
-        .speed-value {
-            font-size: 38px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            margin: 0;
-            line-height: 1;
-        }
+       .speed-value {
+           font-size: 38px;
+           font-weight: bold;
+           text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+           margin: 0;
+           line-height: 1;
+       }
 
-        .speed-unit {
-            font-size: 14px;
-            opacity: 0.8;
-            margin-top: 5px;
-        }
+       .speed-unit {
+           font-size: 14px;
+           opacity: 0.8;
+           margin-top: 5px;
+       }
 
-        /* Sezione metriche (2/3 destro) */
-        .metrics-section {
-            flex: 2;
-            display: grid;
-            grid-template-rows: repeat(3, 1fr);
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            max-width: 520px;
-        }
+       /* Sezione metriche (2/3 destro) */
+       .metrics-section {
+           flex: 2;
+           display: grid;
+           grid-template-rows: repeat(3, 1fr);
+           grid-template-columns: repeat(2, 1fr);
+           gap: 10px;
+           max-width: 520px;
+       }
 
-        .metric-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-        }
+       .metric-card {
+           background: rgba(255,255,255,0.1);
+           border-radius: 12px;
+           padding: 8px;
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           justify-content: space-between;
+       }
 
-        h3 {
-            margin: 0;
-            font-size: 14px;
-            opacity: 0.8;
-            text-transform: uppercase;
-        }
+       h3 {
+           margin: 0;
+           font-size: 14px;
+           opacity: 0.8;
+           text-transform: uppercase;
+       }
 
-        .metric-value {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 4px 0;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
+       .metric-value {
+           font-size: 24px;
+           font-weight: bold;
+           margin: 4px 0;
+           text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+       }
 
-        /* Stile LED comune */
-        .led-container {
-            display: flex;
-            gap: 2px;
-            width: 100%;
-            margin: 4px 0;
-        }
+       /* Stile LED comune */
+       .led-container {
+           display: flex;
+           gap: 2px;
+           width: 100%;
+           margin: 4px 0;
+       }
 
-        .led-segment {
-            flex: 1;
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            transition: background-color 0.3s ease;
-        }
+       .led-segment {
+           flex: 1;
+           height: 6px;
+           background: rgba(255,255,255,0.1);
+           border-radius: 3px;
+           transition: background-color 0.3s ease;
+       }
 
-        /* Stili indicatori specifici */
-        .battery-segment.active { background-color: #4CAF50; }
-        .battery-segment.reserve { background-color: #F44336; }
+       /* Stili indicatori specifici */
+       .battery-segment.active { background-color: #4CAF50; }
+       .battery-segment.reserve { background-color: #F44336; }
 
-        .power-segment.active.low { background-color: #4CAF50; }
-        .power-segment.active.medium { background-color: #FFC107; }
-        .power-segment.active.high { background-color: #F44336; }
+       .power-segment.active.low { background-color: #4CAF50; }
+       .power-segment.active.medium { background-color: #FFC107; }
+       .power-segment.active.high { background-color: #F44336; }
 
-        .slope-segment.descent { background-color: #2196F3; }
-        .slope-segment.climb { background-color: #F44336; }
+       .slope-segment.descent { background-color: #2196F3; }
+       .slope-segment.climb { background-color: #F44336; }
 
-        .assist-level.eco { background-color: #4CAF50; }
-        .assist-level.trail { background-color: #FFC107; }
-        .assist-level.turbo { background-color: #F44336; }
+       .assist-level.eco { background-color: #4CAF50; }
+       .assist-level.trail { background-color: #FFC107; }
+       .assist-level.turbo { background-color: #F44336; }
 
-        /* Status message */
-        #status-message {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            z-index: 9999;
-            display: none;
-        }
+       /* Status message */
+       #status-message {
+           position: fixed;
+           bottom: 20px;
+           left: 50%;
+           transform: translateX(-50%);
+           background: rgba(0,0,0,0.7);
+           color: white;
+           padding: 10px 20px;
+           border-radius: 5px;
+           z-index: 9999;
+           display: none;
+       }
 
-        /* Stili per dispositivi mobili */
-        @media screen and (max-width: 812px) {
-            .dashboard {
-                width: 100vw;
-                height: 100vh;
-            }
-        }
-    </style>
+       /* Debug panel */
+       #debug-panel {
+           position: fixed;
+           top: 10px;
+           left: 10px;
+           background: rgba(0,0,0,0.7);
+           color: white;
+           padding: 10px;
+           border-radius: 5px;
+           font-size: 12px;
+           font-family: monospace;
+           z-index: 9999;
+       }
+
+       /* Stili per dispositivi mobili */
+       @media screen and (max-width: 812px) {
+           .dashboard {
+               width: 100vw;
+               height: 100vh;
+           }
+       }
+   </style>
 </head>
     <body>
    <div id="status-message"></div>
+   <div id="debug-panel"></div>
    <div class="dashboard">
        <!-- Sezione Velocità (1/3 sinistro) -->
        <div class="speed-section">
@@ -276,11 +293,21 @@
    </div>
 
    <script>
+       // Debug function
+       function debugLog(message) {
+           const debugPanel = document.getElementById('debug-panel');
+           const timestamp = new Date().toLocaleTimeString();
+           debugPanel.innerHTML += `${timestamp}: ${message}<br>`;
+           debugPanel.scrollTop = debugPanel.scrollHeight;
+           console.log(message);
+       }
+
        // Funzione per mostrare messaggi di stato
        function showStatus(message, duration = 3000) {
            const statusEl = document.getElementById('status-message');
            statusEl.textContent = message;
            statusEl.style.display = 'block';
+           debugLog(message);
            setTimeout(() => {
                statusEl.style.display = 'none';
            }, duration);
@@ -290,7 +317,7 @@
        function initializeUI() {
            showStatus('Inizializzazione dashboard...');
            
-           // Crea i LED del tachimetro (50 segmenti su 270 gradi)
+           // Crea i LED del tachimetro
            const speedArc = document.querySelector('.speed-arc');
            for (let i = 0; i < 50; i++) {
                const led = document.createElement('div');
@@ -324,20 +351,53 @@
 
        // Inizializzazione COBI.bike
        function initializeCobi() {
-           if (typeof COBI !== 'undefined') {
-               showStatus('Connessione a COBI.bike...');
-               
-               // Registra gli handler per i dati di COBI.bike
-               COBI.bike.speed.subscribe(speed => updateSpeed(speed * 3.6)); // m/s to km/h
-               COBI.bike.batteryState.subscribe(battery => updateBattery(battery.percentage));
-               COBI.bike.power.subscribe(power => updatePower(power));
-               COBI.bike.cadence.subscribe(cadence => updateCadence(Math.round(cadence)));
-               COBI.bike.grade.subscribe(grade => updateSlope(grade));
-               
-               showStatus('Connesso a COBI.bike');
-           } else {
-               showStatus('COBI.bike non rilevato');
+           debugLog('Inizializzazione COBI.bike...');
+           
+           if (typeof COBI === 'undefined') {
+               showStatus('COBI.bike non trovato');
+               return;
            }
+
+           // Inizializza COBI.bike
+           COBI.init('token').then(function() {
+               debugLog('COBI.bike inizializzato con successo');
+               
+               // Sottoscrizioni ai dati
+               COBI.rideService.speed.subscribe(function(speed) {
+                   debugLog('Velocità ricevuta: ' + speed);
+                   updateSpeed(speed * 3.6); // m/s to km/h
+               });
+
+               COBI.rideService.cadence.subscribe(function(cadence) {
+                   debugLog('Cadenza ricevuta: ' + cadence);
+                   updateCadence(Math.round(cadence));
+               });
+
+               COBI.motorService.assistanceLevel.subscribe(function(level) {
+                   debugLog('Livello assistenza ricevuto: ' + level);
+                   updateAssistLevel(level);
+               });
+
+               COBI.batteryService.stateOfCharge.subscribe(function(battery) {
+                   debugLog('Batteria ricevuta: ' + battery);
+                   updateBattery(battery);
+               });
+
+               COBI.navigationService.grade.subscribe(function(grade) {
+                   debugLog('Pendenza ricevuta: ' + grade);
+                   updateSlope(grade);
+               });
+
+               COBI.motors.power.subscribe(function(power) {
+                   debugLog('Potenza ricevuta: ' + power);
+                   updatePower(power);
+               });
+
+               showStatus('Connesso a COBI.bike');
+           }).catch(function(error) {
+               debugLog('Errore inizializzazione COBI.bike: ' + error);
+               showStatus('Errore connessione COBI.bike');
+           });
        }
 
        // Funzioni di aggiornamento UI
@@ -439,7 +499,7 @@
            try {
                await screen.orientation.lock('landscape');
            } catch (e) {
-               showStatus('Rotazione schermo non supportata');
+               debugLog('Rotazione schermo non supportata');
            }
        }
 

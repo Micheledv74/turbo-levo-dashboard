@@ -350,17 +350,17 @@
        }
 
        // Inizializzazione COBI.bike
-       function initializeCobi() {
-           debugLog('Inizializzazione COBI.bike...');
-           
-           if (typeof COBI === 'undefined') {
-               showStatus('COBI.bike non trovato');
-               return;
-           }
+function initializeCobi() {
+    debugLog('Inizializzazione COBI.bike...');
+    
+    if (typeof COBI === 'undefined') {
+        showStatus('COBI.bike non trovato');
+        return;
+    }
 
-           // Inizializza COBI.bike
-           COBI.init('token').then(function() {
-               debugLog('COBI.bike inizializzato con successo');
+    // Autenticazione con il token
+    COBI.init('token').then(function() {
+        debugLog('COBI.bike inizializzato con successo');
                
                // Sottoscrizioni ai dati
                COBI.rideService.speed.subscribe(function(speed) {

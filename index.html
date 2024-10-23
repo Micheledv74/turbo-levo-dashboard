@@ -189,34 +189,6 @@
         .assist-level.trail { background-color: #FFC107; }
         .assist-level.turbo { background-color: #F44336; }
 
-        /* Stile aggiornato per il pulsante di connessione */
-        #connect-button {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            z-index: 9999;
-            transform: rotate(0deg);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        #connect-button:hover { 
-            background: #45a049;
-            box-shadow: 0 3px 7px rgba(0,0,0,0.3);
-        }
-
-        #connect-button:disabled { 
-            background: #cccccc;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
         /* Status message */
         #status-message {
             position: fixed;
@@ -237,239 +209,245 @@
                 width: 100vw;
                 height: 100vh;
             }
-            
-            #connect-button {
-                font-size: 14px;
-                padding: 10px 16px;
-            }
         }
     </style>
 </head>
-<body>
-    <button id="connect-button">Connetti</button>
-    <div id="status-message"></div>
-    <div class="dashboard">
-        <!-- Sezione Velocità (1/3 sinistro) -->
-        <div class="speed-section">
-            <div class="speedometer">
-                <div class="speed-title">Velocità</div>
-                <div class="speed-arc">
-                    <!-- I LED verranno creati via JavaScript -->
-                </div>
-                <div class="speed-display">
-                    <div class="speed-value">0</div>
-                    <div class="speed-unit">km/h</div>
-                </div>
-            </div>
-        </div>
+    <body>
+   <div id="status-message"></div>
+   <div class="dashboard">
+       <!-- Sezione Velocità (1/3 sinistro) -->
+       <div class="speed-section">
+           <div class="speedometer">
+               <div class="speed-title">Velocità</div>
+               <div class="speed-arc">
+                   <!-- I LED verranno creati via JavaScript -->
+               </div>
+               <div class="speed-display">
+                   <div class="speed-value">0</div>
+                   <div class="speed-unit">km/h</div>
+               </div>
+           </div>
+       </div>
 
-        <!-- Sezione Metriche (2/3 destro) -->
-        <div class="metrics-section">
-            <!-- Batteria -->
-            <div class="metric-card">
-                <h3>Batteria</h3>
-                <div id="battery" class="metric-value">0%</div>
-                <div class="led-container battery-segments"></div>
-            </div>
+       <!-- Sezione Metriche (2/3 destro) -->
+       <div class="metrics-section">
+           <!-- Batteria -->
+           <div class="metric-card">
+               <h3>Batteria</h3>
+               <div id="battery" class="metric-value">0%</div>
+               <div class="led-container battery-segments"></div>
+           </div>
 
-            <!-- Livello Assistenza -->
-            <div class="metric-card">
-                <h3>Livello Assistenza</h3>
-                <div id="assist-level" class="metric-value">ECO</div>
-                <div class="led-container assist-levels"></div>
-            </div>
+           <!-- Livello Assistenza -->
+           <div class="metric-card">
+               <h3>Livello Assistenza</h3>
+               <div id="assist-level" class="metric-value">ECO</div>
+               <div class="led-container assist-levels"></div>
+           </div>
 
-            <!-- Potenza -->
-            <div class="metric-card">
-                <h3>Potenza</h3>
-                <div id="power" class="metric-value">0 W</div>
-                <div class="led-container power-segments"></div>
-            </div>
+           <!-- Potenza -->
+           <div class="metric-card">
+               <h3>Potenza</h3>
+               <div id="power" class="metric-value">0 W</div>
+               <div class="led-container power-segments"></div>
+           </div>
 
-            <!-- Cadenza -->
-            <div class="metric-card">
-                <h3>Cadenza</h3>
-                <div id="cadence" class="metric-value">0</div>
-                <div>RPM</div>
-            </div>
+           <!-- Cadenza -->
+           <div class="metric-card">
+               <h3>Cadenza</h3>
+               <div id="cadence" class="metric-value">0</div>
+               <div>RPM</div>
+           </div>
 
-            <!-- Pendenza -->
-            <div class="metric-card">
-                <h3>Pendenza</h3>
-                <div id="slope" class="metric-value">0%</div>
-                <div class="led-container slope-segments"></div>
-            </div>
+           <!-- Pendenza -->
+           <div class="metric-card">
+               <h3>Pendenza</h3>
+               <div id="slope" class="metric-value">0%</div>
+               <div class="led-container slope-segments"></div>
+           </div>
 
-            <!-- Autonomia -->
-            <div class="metric-card">
-                <h3>Autonomia</h3>
-                <div id="range" class="metric-value">0</div>
-                <div>km</div>
-            </div>
-        </div>
-    </div>
+           <!-- Autonomia -->
+           <div class="metric-card">
+               <h3>Autonomia</h3>
+               <div id="range" class="metric-value">0</div>
+               <div>km</div>
+           </div>
+       </div>
+   </div>
 
-    <script>
-        // Funzione per mostrare messaggi di stato
-        function showStatus(message, duration = 3000) {
-            const statusEl = document.getElementById('status-message');
-            statusEl.textContent = message;
-            statusEl.style.display = 'block';
-            setTimeout(() => {
-                statusEl.style.display = 'none';
-            }, duration);
-        }
+   <script>
+       // Funzione per mostrare messaggi di stato
+       function showStatus(message, duration = 3000) {
+           const statusEl = document.getElementById('status-message');
+           statusEl.textContent = message;
+           statusEl.style.display = 'block';
+           setTimeout(() => {
+               statusEl.style.display = 'none';
+           }, duration);
+       }
 
-        // Inizializzazione degli elementi UI
-        function initializeUI() {
-            showStatus('Inizializzazione dashboard...');
-            
-            // Crea i LED del tachimetro (50 segmenti su 270 gradi)
-            const speedArc = document.querySelector('.speed-arc');
-            for (let i = 0; i < 50; i++) {
-                const led = document.createElement('div');
-                led.className = 'speed-led';
-                const angle = -135 + (i * (270 / 49));
-                led.style.transform = `rotate(${angle}deg) translateY(-55px)`;
-                speedArc.appendChild(led);
-            }
+       // Inizializzazione degli elementi UI
+       function initializeUI() {
+           showStatus('Inizializzazione dashboard...');
+           
+           // Crea i LED del tachimetro (50 segmenti su 270 gradi)
+           const speedArc = document.querySelector('.speed-arc');
+           for (let i = 0; i < 50; i++) {
+               const led = document.createElement('div');
+               led.className = 'speed-led';
+               const angle = -135 + (i * (270 / 49));
+               led.style.transform = `rotate(${angle}deg) translateY(-55px)`;
+               speedArc.appendChild(led);
+           }
 
-            // Crea i segmenti degli altri indicatori
-            ['battery-segments', 'power-segments', 'slope-segments'].forEach(containerId => {
-                const container = document.querySelector(`.${containerId}`);
-                for (let i = 0; i < 10; i++) {
-                    const segment = document.createElement('div');
-                    segment.className = 'led-segment ' + containerId.slice(0, -9) + '-segment';
-                    container.appendChild(segment);
-                }
-            });
+           // Crea i segmenti degli altri indicatori
+           ['battery-segments', 'power-segments', 'slope-segments'].forEach(containerId => {
+               const container = document.querySelector(`.${containerId}`);
+               for (let i = 0; i < 10; i++) {
+                   const segment = document.createElement('div');
+                   segment.className = 'led-segment ' + containerId.slice(0, -9) + '-segment';
+                   container.appendChild(segment);
+               }
+           });
 
-            // Crea i segmenti del livello di assistenza
-            const assistContainer = document.querySelector('.assist-levels');
-            for (let i = 0; i < 3; i++) {
-                const segment = document.createElement('div');
-                segment.className = 'led-segment assist-level';
-                assistContainer.appendChild(segment);
-            }
+           // Crea i segmenti del livello di assistenza
+           const assistContainer = document.querySelector('.assist-levels');
+           for (let i = 0; i < 3; i++) {
+               const segment = document.createElement('div');
+               segment.className = 'led-segment assist-level';
+               assistContainer.appendChild(segment);
+           }
 
-            showStatus('Dashboard pronta');
-        }
+           showStatus('Dashboard pronta');
+           initializeCobi();
+       }
 
-        // Funzioni di aggiornamento UI (rimangono invariate)
-        function updateSpeed(speed) {
-            document.querySelector('.speed-value').textContent = Math.round(speed);
-            const leds = document.querySelectorAll('.speed-led');
-            const activeCount = Math.floor(speed);
-            leds.forEach((led, index) => {
-                led.className = 'speed-led';
-                if (index < activeCount) {
-                    led.classList.add('active');
-                    if (index < 20) led.classList.add('eco');
-                    else if (index < 25) led.classList.add('cruise');
-                    else led.classList.add('power');
-                }
-            });
-        }
+       // Inizializzazione COBI.bike
+       function initializeCobi() {
+           if (typeof COBI !== 'undefined') {
+               showStatus('Connessione a COBI.bike...');
+               
+               // Registra gli handler per i dati di COBI.bike
+               COBI.bike.speed.subscribe(speed => updateSpeed(speed * 3.6)); // m/s to km/h
+               COBI.bike.batteryState.subscribe(battery => updateBattery(battery.percentage));
+               COBI.bike.power.subscribe(power => updatePower(power));
+               COBI.bike.cadence.subscribe(cadence => updateCadence(Math.round(cadence)));
+               COBI.bike.grade.subscribe(grade => updateSlope(grade));
+               
+               showStatus('Connesso a COBI.bike');
+           } else {
+               showStatus('COBI.bike non rilevato');
+           }
+       }
 
-        // ... altre funzioni di aggiornamento rimangono invariate ...
+       // Funzioni di aggiornamento UI
+       function updateSpeed(speed) {
+           document.querySelector('.speed-value').textContent = Math.round(speed);
+           const leds = document.querySelectorAll('.speed-led');
+           const activeCount = Math.floor(speed);
+           
+           leds.forEach((led, index) => {
+               led.className = 'speed-led';
+               if (index < activeCount) {
+                   led.classList.add('active');
+                   if (index < 20) led.classList.add('eco');
+                   else if (index < 25) led.classList.add('cruise');
+                   else led.classList.add('power');
+               }
+           });
+       }
 
-        // Gestione Bluetooth migliorata
-        const connectButton = document.getElementById('connect-button');
-        let device = null;
+       function updateBattery(percentage) {
+           document.getElementById('battery').textContent = percentage + '%';
+           const segments = document.querySelectorAll('.battery-segment');
+           const activeSegments = Math.floor(percentage / 10);
+           
+           segments.forEach((segment, index) => {
+               segment.className = 'led-segment battery-segment';
+               if (index < activeSegments) {
+                   if (index < 2) segment.classList.add('reserve');
+                   else segment.classList.add('active');
+               }
+           });
+       }
 
-        async function connectToBike() {
-            try {
-                showStatus('Ricerca dispositivi Bluetooth...');
-                
-                // Lista completa dei servizi Specialized/COBI noti
-                const knownServices = [
-                    'cycling_speed_and_cadence',
-                    'battery_service',
-                    '00000003-0000-4b49-4e4f-525441474947',  // Specialized
-                    '4cd09416-0000-0000-0000-000000000000',  // COBI
-                    // Aggiunti altri servizi standard bici
-                    '1818',  // Cycling Power
-                    '180f',  // Battery Service
-                    '1816'   // Cycling Speed and Cadence
-                ];
+       function updatePower(watts) {
+           document.getElementById('power').textContent = watts + ' W';
+           const segments = document.querySelectorAll('.power-segment');
+           const maxPower = 400;
+           const activeCount = Math.floor((watts / maxPower) * segments.length);
+           
+           segments.forEach((segment, index) => {
+               segment.className = 'led-segment power-segment';
+               if (index < activeCount) {
+                   if (index < segments.length * 0.4) segment.classList.add('active', 'low');
+                   else if (index < segments.length * 0.7) segment.classList.add('active', 'medium');
+                   else segment.classList.add('active', 'high');
+               }
+           });
+       }
 
-                device = await navigator.bluetooth.requestDevice({
-                    filters: [
-                        { namePrefix: 'Specialized' },
-                        { namePrefix: 'COBI' },
-                        { namePrefix: 'Turbo' },
-                        { services: ['cycling_speed_and_cadence'] }
-                    ],
-                    optionalServices: knownServices
-                });
+       function updateSlope(percentage) {
+           document.getElementById('slope').textContent = percentage.toFixed(1) + '%';
+           const segments = document.querySelectorAll('.slope-segment');
+           const midPoint = segments.length / 2;
+           
+           segments.forEach((segment, index) => {
+               segment.className = 'led-segment slope-segment';
+               if (percentage > 0) {
+                   if (index >= midPoint) {
+                       const threshold = (index - midPoint + 1) * (80 / midPoint);
+                       if (percentage >= threshold) segment.classList.add('climb');
+                   }
+               } else if (percentage < 0) {
+                   if (index < midPoint) {
+                       const threshold = (midPoint - index) * (50 / midPoint);
+                       if (Math.abs(percentage) >= threshold) segment.classList.add('descent');
+                   }
+               }
+           });
+       }
 
-                showStatus(`Dispositivo trovato: ${device.name}`);
-                console.log('Dispositivo trovato:', device);
+       function updateAssistLevel(level) {
+           const levels = {
+               1: { name: 'ECO', segments: [true, false, false] },
+               2: { name: 'TRAIL', segments: [true, true, false] },
+               3: { name: 'TURBO', segments: [true, true, true] }
+           };
+           
+           document.getElementById('assist-level').textContent = levels[level].name;
+           const segments = document.querySelectorAll('.assist-level');
+           
+           segments.forEach((segment, index) => {
+               segment.className = 'led-segment assist-level';
+               if (levels[level].segments[index]) {
+                   segment.classList.add(index === 0 ? 'eco' : index === 1 ? 'trail' : 'turbo');
+               }
+           });
+       }
 
-                showStatus('Connessione in corso...');
-                const server = await device.gatt.connect();
-                console.log('Server GATT connesso:', server);
+       function updateCadence(rpm) {
+           document.getElementById('cadence').textContent = rpm;
+       }
 
-                showStatus('Ricerca servizi...');
-                const services = await server.getPrimaryServices();
-                console.log('Servizi trovati:', services);
+       function updateRange(km) {
+           document.getElementById('range').textContent = km;
+       }
 
-                services.forEach(async (service) => {
-                    console.log('Servizio:', service.uuid);
-                    const characteristics = await service.getCharacteristics();
-                    console.log('Caratteristiche:', characteristics);
-                });
+       // Gestione orientamento schermo
+       async function lockScreenOrientation() {
+           try {
+               await screen.orientation.lock('landscape');
+           } catch (e) {
+               showStatus('Rotazione schermo non supportata');
+           }
+       }
 
-                showStatus('Connessione completata');
-                connectButton.textContent = 'Disconnetti';
-                
-            } catch (error) {
-                console.error('Errore dettagliato:', error);
-                showStatus('Errore: ' + error.message);
-                connectButton.textContent = 'Riprova';
-            }
-        }
-
-        connectButton.addEventListener('click', async () => {
-            if (device && device.gatt.connected) {
-                try {
-                    await device.gatt.disconnect();
-                    showStatus('Disconnesso');
-                    connectButton.textContent = 'Connetti';
-                    device = null;
-                } catch (error) {
-                    showStatus('Errore disconnessione: ' + error.message);
-                }
-            } else {
-                connectToBike();
-            }
-        });
-
-        // Gestione orientamento schermo
-        async function lockScreenOrientation() {
-            try {
-                await screen.orientation.lock('landscape');
-            } catch (e) {
-                showStatus('Rotazione schermo non supportata');
-            }
-        }
-
-        // Inizializzazione
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeUI();
-            lockScreenOrientation();
-            
-            // Demo per test
-            setTimeout(() => {
-                updateBattery(85);
-                updateAssistLevel(2);
-                updateSpeed(28);
-                updatePower(250);
-                updateSlope(15);
-                updateCadence(75);
-                updateRange(45);
-            }, 1000);
-        });
-    </script>
+       // Inizializzazione
+       document.addEventListener('DOMContentLoaded', () => {
+           initializeUI();
+           lockScreenOrientation();
+       });
+   </script>
 </body>
 </html>
